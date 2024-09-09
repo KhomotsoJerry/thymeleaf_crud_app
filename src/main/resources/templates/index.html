@@ -27,7 +27,8 @@
                <td th:text="${student.lastName}"></td>
                <td th:text="${student.email}"></td>
                <td>
-                   <a th:href="@{/showFormUpdate/{id}(id=student.id)}" class="btn btn-primary">Edit</a>
+                   <a th:href="@{/showFormUpdate/{id}(id=${student.id})}" class="btn btn-primary">Edit</a>
+                   <a th:href="@{/deleteStudent/{id}(id=${student.id})}" class="btn btn-danger">Delete</a>
                </td>
            </tr>
         </tbody>
