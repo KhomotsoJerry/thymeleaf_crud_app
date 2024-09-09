@@ -47,7 +47,7 @@ public class StudentController {
         int pageSize = 5 ;
 
         Page<Student> page = studentServiceImplementation.findPaginated(pageNo,pageSize,sortField,sortDirection);
-        List<Student> studentList =studentServiceImplementation.getAllStudents();
+        List<Student> studentList =page.getContent();
         model.addAttribute("currentPage",pageNo);
         model.addAttribute("totalPages",page.getTotalPages());
         model.addAttribute("totalItems",page.getTotalElements());
