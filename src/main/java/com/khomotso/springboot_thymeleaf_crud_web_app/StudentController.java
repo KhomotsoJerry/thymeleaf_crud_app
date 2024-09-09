@@ -3,12 +3,13 @@ package com.khomotso.springboot_thymeleaf_crud_web_app;
 import com.khomotso.springboot_thymeleaf_crud_web_app.model.Student;
 import com.khomotso.springboot_thymeleaf_crud_web_app.service.StudentServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class StudentController {
@@ -17,8 +18,7 @@ public class StudentController {
 
     @GetMapping("/")
     public String viewHomePage(Model model){
-        model.addAttribute("studentList",studentServiceImplementation.getAllStudents());
-        return "index";
+        return findPaginated(1,"firstName","asc",model);
     }
     @GetMapping("/showNewStudentForm")
     public String showNewStudentForm(Model model){
@@ -41,5 +41,22 @@ public class StudentController {
     public String deleteStudent(@PathVariable Long id){
         this.studentServiceImplementation.deleteStudentById(id);
         return "redirect:/";
+    }
+    @GetMapping("/page/{pageNo}")
+    public String findPaginated(@PathVariable("pageNo") int pageNo, @RequestParam("sortField") String sortField,@RequestParam("sortDirection") String sortDirection, Model model){
+        int pageSize = 5 ;
+
+        Page<Student> page = studentServiceImplementation.findPaginated(pageNo,pageSize,sortField,sortDirection);
+        List<Student> studentList =studentServiceImplementation.getAllStudents();
+        model.addAttribute("currentPage",pageNo);
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("totalItems",page.getTotalElements());
+
+        model.addAttribute("sortField",sortField);
+        model.addAttribute("sortDirection",sortDirection);
+        model.addAttribute("reverseSortDir",sortDirection.equals("asc") ? "desc" : "asc" );
+        model.addAttribute("studentList",studentList);
+
+        return "index";
     }
 }
